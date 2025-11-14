@@ -1,7 +1,6 @@
 import { User } from "../schema/userSchema.ts";
-import express, { Router, type Request, type Response } from 'express'
-import { registervalidate,loginvalidate } from "../schema/validateAuthUserSchema.ts";
-import { validationMiddleware } from "../middleware/validation.ts";
+import { type Request, type Response } from 'express'
+
 
 class UserController {
 
@@ -21,17 +20,37 @@ class UserController {
 
     login = async (req: Request, res: Response) => {
 
-        const { email, password } = req.body
-
         try {
             const user = await User.findByCredential(req.body.email, req.body.password);
-            const token=await user.generateAuthToken()
-            return res.status(200).send({ user, token});
+            const token = await user.generateAuthToken()
+            return res.status(200).send({ user, token });
         } catch (error: any) {
             return res.status(500).send({ error: error.message });
         }
     }
 
+    logout = async (req: Request, res: Response) => {
+        try {
+            req.user.tokens = req.user.tokens.filter(
+                (t: { token: string }) => t.token !== req.token
+            );
+            await req.user.save()
+            return res.status(200).send({ message: 'User logout success' })
+        } catch (error: any) {
+            return res.status(500).send({ error: error.message, message: 'failed to logout' })
+        }
+    }
+
+    logoutAll = async (req: Request, res: Response) => {
+        try {
+            req.user.tokens = []
+            await req.user.save()
+            return res.status(200).send({ message: 'logout from all device' })
+        } catch (error: any) {
+            return res.status(500).send({ error: error.message, message: 'failed to logout' })
+        }
+    }
+    
 }
 
 export const userController = new UserController();

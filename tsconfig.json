@@ -46,7 +46,8 @@
     "moduleDetection": "force",
     "skipLibCheck": true,
     "allowImportingTsExtensions": true,
-    "noEmit": true
+    "noEmit": true,
+    "typeRoots": ["./src/types", "./node_modules/@types"],
   },
   "include": ["src/**/*"],
   // Specifies the array of file patterns to exclude from the program.

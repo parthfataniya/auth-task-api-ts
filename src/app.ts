@@ -1,10 +1,7 @@
 import express from 'express';
-import { userController } from './controller/UserController.ts';
 import dotenv from 'dotenv'
-// import { taskController } from './controller/TaskController.ts';
-import router  from './router/Task.ts'
-import userRouter from './router/user.ts';
-
+import router from './router/Task.ts'
+import userRouter from './router/User.ts';
 
 dotenv.config()
 
@@ -19,3 +16,4 @@ app.use('/task', router);
 app.listen(port, () => {
     console.log("listen")
 })
+

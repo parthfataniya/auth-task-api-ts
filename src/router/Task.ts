@@ -15,23 +15,20 @@ router.post('/subtask/:id', auth, validationMiddleware(addTaskvalidate), taskCon
 
 router.get('/getAll', auth, taskController.getAllTask)
 
-router.get('/subtask', auth, taskController.getAllSUbTask) 
-
-router.get('/subtask/:id', auth, validationMiddleware(getparam, 'params'), taskController.getsubtask) 
-
 router.get('/', auth, taskController.getTaskByUser)
+
+router.get('/sub/:id',auth,validationMiddleware(getparam, 'params'),taskController.getsub)
 
 
 
 router.patch('/updatebyuser/:id', auth, validationMiddleware(updateTaskvalidate), taskController.updateTaskbyuser)
 
-router.patch('/subtask/:id', auth, validationMiddleware(updateTaskvalidate), taskController.updatesubtask)
+router.patch('/sub/:id',auth,validationMiddleware(updateTaskvalidate),taskController.upsubtask)
 
-router.patch('/:type/:id',auth,taskController.update)
 
 
 router.delete('/deletebyuser/:id', auth, validationMiddleware(getparam, 'params'), taskController.deleteTaskbyuser);
 
-router.delete('/subtask/:id', auth, validationMiddleware(getparam, 'params'), taskController.deleteSubTask)
+router.delete('/sub/:id', auth, validationMiddleware(getparam, 'params'), taskController.deleteSubTask)
 
 export default router;

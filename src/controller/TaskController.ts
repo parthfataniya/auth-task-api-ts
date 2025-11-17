@@ -1,13 +1,12 @@
 import { type ITask, Task } from "../schema/taskSchema.ts";
 import { response, type Request, type Response } from 'express'
 import mongoose from "mongoose";
-import { User } from "../schema/userSchema.ts";
 
 class TaskController {
 
     addTask = async (req: Request, res: Response) => {
- 
-         try {
+
+        try {
             const user = req.user
             const { title, description, scheduledate } = req.body
 
@@ -30,21 +29,21 @@ class TaskController {
             const user = req.user
             const { title, description, scheduledate } = req.body
 
-            const subtaskObject = { title, description, scheduledate}
+            const subtaskObject = { title, description, scheduledate }
             const task = await Task.findOne({ _id: id, auther: user._id })
 
             if (!task) {
                 return res.status(404).send({ message: 'Task not found' })
             }
 
-            const subtask=task.subtasks?.push(subtaskObject)
+            const subtask = task.subtasks?.push(subtaskObject)
             await task.save()
-            
-            return res.status(200).send({ message: "subtask added success" ,data:subtask})
-        } catch (error:any) {
-            res.status(500).send({error:error.message})
+
+            return res.status(200).send({ message: "subtask added success", data: subtask })
+        } catch (error: any) {
+            res.status(500).send({ error: error.message })
         }
-        
+
 
     }
 
@@ -58,30 +57,29 @@ class TaskController {
             }
 
             return res.status(200).send({ task })
-                
-        } 
-        catch (error:any) {
-            return res.status(500).send({error:error.message})
+
         }
-        
+        catch (error: any) {
+            return res.status(500).send({ error: error.message })
+        }
+
     }
 
-    getsub=async (req:Request,res:Response) =>{
+    getsub = async (req: Request, res: Response) => {
 
         try {
-            const user=req.user
-            const { id }= req.params
+            const user = req.user
+            const { id } = req.params
 
-            const subtask=await Task.findOne({'subtasks._id':id,auther:user._id},{'subtasks.$':1})
+            const subtask = await Task.findOne({ 'subtasks._id': id, auther: user._id }, { 'subtasks.$': 1 })
 
-            if (!subtask)
-            {
-                return res.status(200).send({message:'subtask not found'})
+            if (!subtask) {
+                return res.status(200).send({ message: 'subtask not found' })
             }
-            
-            return res.status(200).send({data:subtask})
-        } catch (error:any) {
-            return res.status(500).send({error:error.message})
+
+            return res.status(200).send({ data: subtask })
+        } catch (error: any) {
+            return res.status(500).send({ error: error.message })
         }
 
     }
@@ -93,16 +91,14 @@ class TaskController {
             const { id } = req.params
             const updates = req.body
             const task = await Task.findOne({ _id: id, auther: user._id })
-        
+
             if (!task) {
                 return res.status(404).send({ message: "Task not found" })
             }
 
-             if (task?.subtasks?.[0]?.status != 'completed')
-            {
-                if (updates.status == 'completed')
-                {
-                    return res.status(404).send({message:'You can not update status completed until all subtask completed!'})
+            if (task?.subtasks?.[0]?.status != 'completed') {
+                if (updates.status == 'completed') {
+                    return res.status(404).send({ message: 'You can not update status completed until all subtask completed!' })
                 }
             }
 
@@ -120,39 +116,35 @@ class TaskController {
         }
     }
 
-    upsubtask=async (req:Request,res:Response) =>{
+    updatesubtask = async (req: Request, res: Response) => {
 
         try {
-            const user=req.user
-            const { id }= req.params
+            const user = req.user
+            const { id } = req.params
 
-            const task=await Task.findOne({'subtasks._id':id,auther:user._id})
+            const task = await Task.findOne({ 'subtasks._id': id, auther: user._id })
 
-            if (!task)
-            {
-                return res.status(200).send({message:'subtask not found'})
+            if (!task) {
+                return res.status(200).send({ message: 'subtask not found' })
             }
 
-            const subtask=(task.subtasks as any).id(id)
-            if( !subtask)
-            {
+            const subtask = (task.subtasks as any).id(id)
+            if (!subtask) {
                 res.status(404).send("not update")
             }
 
-            console.log(subtask)
-            const update=Object.assign(task.subtasks?.[0] ?? {},req.body)
+            const update = Object.assign(task.subtasks?.[0] ?? {}, req.body)
 
-            if (!update)
-            {
-                return res.status(404).send({message:'update not perform'})
+            if (!update) {
+                return res.status(404).send({ message: 'update not perform' })
             }
             await task.save()
 
-            
-            return res.status(200).send({message:'update success',data:update})
-    
-        } catch (error:any) {
-            return res.status(500).send({error:error.message})
+
+            return res.status(200).send({ message: 'update success', data: update })
+
+        } catch (error: any) {
+            return res.status(500).send({ error: error.message })
         }
 
     }
@@ -171,37 +163,35 @@ class TaskController {
             }
 
             return res.status(200).send({ message: 'task delete success', data: task })
-        } catch (error:any) {
-            res.status(500).send({message:error.message})
+        } catch (error: any) {
+            res.status(500).send({ message: error.message })
         }
-       
+
     }
 
-    deleteSubTask=async (req:Request,res:Response) =>{
+    deleteSubTask = async (req: Request, res: Response) => {
 
         try {
 
-            const user=req.user
-            const { id }=req.params
+            const user = req.user
+            const { id } = req.params
 
-            const subtask=await Task.findOne({auther:user._id,'subtasks._id':id},{'subtasks.$':1})
+            const subtask = await Task.findOne({ auther: user._id, 'subtasks._id': id }, { 'subtasks.$': 1 })
 
-            if(!subtask)
-            {
-                return res.status(404).send({message:"subtask not found"})
+            if (!subtask) {
+                return res.status(404).send({ message: "subtask not found" })
             }
 
-            const deletetask=await Task.findByIdAndUpdate(subtask._id,{$pull:{subtasks:{_id:id}}})
+            const deletetask = await Task.findByIdAndUpdate(subtask._id, { $pull: { subtasks: { _id: id } } })
 
-            if(!deletetask)
-            {
-                return res.status(404).send({message:"delete not perform!"})
+            if (!deletetask) {
+                return res.status(404).send({ message: "delete not perform!" })
             }
 
-            return res.status(200).send({message:"delete perform",data:subtask})
-            
-        } catch (error:any) {
-            return res.status(500).send({error:error.message})
+            return res.status(200).send({ message: "delete perform", data: subtask })
+
+        } catch (error: any) {
+            return res.status(500).send({ error: error.message })
         }
 
     }
@@ -235,7 +225,7 @@ class TaskController {
 
     }
 
-    
+
 
 }
 

@@ -21,14 +21,14 @@ router.get('/sub/:id',auth,validationMiddleware(getparam, 'params'),taskControll
 
 
 
-router.patch('/updatebyuser/:id', auth, validationMiddleware(updateTaskvalidate), taskController.updateTaskbyuser)
+router.patch('/:id', auth, validationMiddleware(updateTaskvalidate), taskController.updateTaskbyuser)
 
-router.patch('/sub/:id',auth,validationMiddleware(updateTaskvalidate),taskController.upsubtask)
+router.patch('/subtask/:id',auth,validationMiddleware(updateTaskvalidate),taskController.updatesubtask)
 
 
 
-router.delete('/deletebyuser/:id', auth, validationMiddleware(getparam, 'params'), taskController.deleteTaskbyuser);
+router.delete('/:id', auth, validationMiddleware(getparam, 'params'), taskController.deleteTaskbyuser);
 
-router.delete('/sub/:id', auth, validationMiddleware(getparam, 'params'), taskController.deleteSubTask)
+router.delete('/subtask/:id', auth, validationMiddleware(getparam, 'params'), taskController.deleteSubTask)
 
 export default router;
